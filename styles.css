@@ -1,0 +1,91 @@
+/* 基础样式 */
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* 头部样式 */
+header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 15px;
+    width: 188px;
+    height: 49px;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+/* 内容卡片 */
+main {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+.card {
+    flex: 1;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+    color: #2575fc;
+    border-bottom: 2px solid #2575fc;
+    padding-bottom: 10px;
+}
+
+/* 列表样式 */
+ul, ol {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+/* 按钮样式 */
+button {
+    background: #2575fc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background: #6a11cb;
+    transform: translateY(-2px);
+}
+
+/* 页脚样式 */
+footer {
+    text-align: center;
+    padding: 15px;
+    background: #eee;
+    color: #666;
+}
