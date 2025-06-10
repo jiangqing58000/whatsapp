@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp安全群发工具 - 全球支持</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #25D366;
+            --secondary: #128C7E;
+            --light: #DCF8C6;
+            --dark: #075E54;
+            --accent: #34B7F1;
+            --warning: #FFC107;
+            --danger: #DC3545;
+            --success: #28A745;
+            --global: #9c27b0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9f0, #e0f7fa);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--secondary), var(--dark));
+            color: white;
+            border-radius: 0 0 30px 30px;
+            padding: 30px 0;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -70px;
+            right: -70px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+            background: linear-gradient(135deg, var(--secondary), var(--dark));
+        }
+        
+        .btn-outline-primary {
+            color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-global {
+            background: linear-gradient(135deg, var(--global), #7b1fa2);
+            color: white;
+        }
+        
+        .btn-global:hover {
+            background: linear-gradient(135deg, #7b1fa2, var(--global));
+            color: white;
+        }
+        
+        .safe-badge {
+            background: linear-gradient(135deg, var(--light), #c5f0a4);
+            color: var(--dark);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .global-badge {
+            background: linear-gradient(135deg, #e1bee7, #ce93d8);
+            color: #4a148c;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            margin-left: 10px;
+        }
+        
+        .progress {
+            height: 12px;
+            border-radius: 10px;
+            background-color: #e9ecef;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+        }
+        
+        .message-preview {
+            background: linear-gradient(to right, #e3f2fd, var(--light));
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            position: relative;
+            border: 1px solid rgba(37, 211, 102, 0.2);
+        }
+        
+        .message-preview:after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: -10px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid var(--light);
+        }
+        
+        .security-tips {
+            background: linear-gradient(to right, #fff8e1, #fff3cd);
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+        }
+        
+        .log-entry {
+            border-bottom: 1px dashed #eee;
+            padding: 12px 0;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+        
+        .log-entry:hover {
+            background-color: rgba(220, 248, 198, 0.2);
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .sent { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; }
+        .failed { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; }
+        .pending { background: linear-gradient(135deg, #fff3cd, #ffeeba); color: #856404; }
+        .sending { background: linear-gradient(135deg, #cce5ff, #b8daff); color: #004085; }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+            z-index: 100;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.6);
+        }
+        
+        .variable-badge {
+            display: inline-block;
+            background: rgba(37, 211, 102, 0.15);
+            color: var(--dark);
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin: 0 3px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .variable-badge:hover {
+            background: rgba(37, 211, 102, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .security-meter {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: rgba(37, 211, 102, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .phone-input {
+            position: relative;
+        }
+        
+        .phone-input .country-code {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .phone-input input {
+            padding-left: 70px;
+        }
+        
+        .sending-progress {
+            display: none;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .number-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-pending { background-color: #ffc107; }
+        .status-sending { background-color: #0d6efd; }
+        .status-sent { background-color: #198754; }
+        .status-failed { background-color: #dc3545; }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .file-import-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        .file-import-container input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .preview-placeholder {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .global-support {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .country-selector {
+            min-width: 120px;
+        }
+        
+        .country-flag {
+            width: 20px;
+            height: 15px;
+            display: inline-block;
+            margin-right: 8px;
+            background-size: cover;
+            background-position: center;
+            vertical-align: middle;
+        }
+        
+        .country-examples {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .example-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #dee2e6;
+        }
+        
+        .example-item:last-child {
+            border-bottom: none;
+        }
+        
+        .country-name {
+            min-width: 140px;
+            font-weight: 500;
+        }
+        
+        .country-code-badge {
+            display: inline-block;
+            background: rgba(156, 39, 176, 0.1);
+            color: #7b1fa2;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+        }
+        
+        .world-map-bg {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" opacity="0.05"><path fill="none" stroke="%237b1fa2" stroke-width="2" d="M150,200 Q250,150 350,200 T550,200"/><circle cx="150" cy="200" r="5" fill="%237b1fa2"/><circle cx="350" cy="200" r="5" fill="%237b1fa2"/><circle cx="550" cy="200" r="5" fill="%237b1fa2"/></svg>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 0;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .feature-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .notification {
+                left: 20px;
+                right: 20px;
+                min-width: auto;
+                transform: translateY(-100%);
+            }
+            
+            .notification.show {
+                transform: translateY(0);
+            }
+            
+            .country-selector {
+                min-width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .country-name {
+                min-width: 110px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 通知系统 -->
+    <div class="notification">
+        <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
+            <strong><i class="fas fa-check-circle me-2"></i>发送完成！</strong>所有消息已安全发送
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    
+    <div class="header text-center world-map-bg">
+        <div class="container">
+            <h1><i class="fab fa-whatsapp"></i> WhatsApp安全群发工具</h1>
+            <p class="lead">高效发送批量消息，支持全球200+国家/地区电话号码格式</p>
+            <span class="safe-badge"><i class="fas fa-shield-alt"></i> 安全模式已启用</span>
+            <span class="global-badge"><i class="fas fa-globe-americas"></i> 全球号码支持</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="global-support">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h4><i class="fas fa-globe me-2"></i>全球电话号码支持</h4>
+                    <p class="mb-0">支持200+国家/地区，包括美国、英国、德国、法国、中国、印度、马来西亚、印度尼西亚、柬埔寨等</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <button class="btn btn-global" id="detectCountry">
+                        <i class="fas fa-sync-alt me-2"></i>自动检测国家
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">全球号码</h5>
+                                        <p class="text-muted mb-0">200+国家/地区</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">智能安全</h5>
+                                        <p class="text-muted mb-0">模拟人工操作</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-random"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">内容随机化</h5>
+                                        <p class="text-muted mb-0">避免重复模式</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">速率控制</h5>
+                                        <p class="text-muted mb-0">智能发送间隔</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- 左侧发送区域 -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4"><i class="fas fa-paper-plane me-2"></i>消息发送设置</h4>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">选择国家/地区</label>
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <select class="form-select country-selector" id="countrySelect">
+                                        <option value="1" data-code="+1" selected>美国 (+1)</option>
+                                        <option value="44" data-code="+44">英国 (+44)</option>
+                                        <option value="49" data-code="+49">德国 (+49)</option>
+                                        <option value="33" data-code="+33">法国 (+33)</option>
+                                        <option value="86" data-code="+86">中国 (+86)</option>
+                                        <option value="91" data-code="+91">印度 (+91)</option>
+                                        <option value="60" data-code="+60">马来西亚 (+60)</option>
+                                        <option value="62" data-code="+62">印度尼西亚 (+62)</option>
+                                        <option value="855" data-code="+855">柬埔寨 (+855)</option>
+                                        <option value="81" data-code="+81">日本 (+81)</option>
+                                        <option value="82" data-code="+82">韩国 (+82)</option>
+                                        <option value="65" data-code="+65">新加坡 (+65)</option>
+                                        <option value="63" data-code="+63">菲律宾 (+63)</option>
+                                        <option value="66" data-code="+66">泰国 (+66)</option>
+                                        <option value="84" data-code="+84">越南 (+84)</option>
+                                        <option value="7" data-code="+7">俄罗斯 (+7)</option>
+                                        <option value="55" data-code="+55">巴西 (+55)</option>
+                                        <option value="61" data-code="+61">澳大利亚 (+61)</option>
+                                        <option value="64" data-code="+64">新西兰 (+64)</option>
+                                        <option value="971" data-code="+971">阿联酋 (+971)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="phone-input">
+                                        <span class="country-code" id="countryCode">+1</span>
+                                        <input type="tel" class="form-control" id="phoneInput" placeholder="输入电话号码，例如：2025550198">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">批量导入电话号码</label>
+                            <textarea class="form-control" rows="4" placeholder="每行输入一个完整电话号码（含国家代码），例如：
++14155552671
++447700900123
++4915223434345
++8613800138000
++60123456789
++628123456789
++85512345678"></textarea>
+                            <div class="mt-2">
+                                <div class="file-import-container">
+                                    <button class="btn btn-outline-primary">
+                                        <i class="fas fa-file-import me-2"></i>从文件导入
+                                    </button>
+                                    <input type="file" accept=".txt,.csv,.xlsx">
+                                </div>
+                                <small class="text-muted ms-2">支持TXT、CSV、Excel格式，每行一个号码</small>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">消息内容</label>
+                            <textarea class="form-control" rows="4" id="messageContent" placeholder="输入要发送的消息内容...">您好{name}，这是来自WhatsApp安全群发工具的测试消息。您可以在消息中使用变量如 {name} 或 {company}。</textarea>
+                            
+                            <div class="mt-2">
+                                <small class="d-block mb-2">可用变量:</small>
+                                <div>
+                                    <span class="variable-badge">{name}</span>
+                                    <span class="variable-badge">{phone}</span>
+                                    <span class="variable-badge">{company}</span>
+                                    <span class="variable-badge">{date}</span>
+                                    <span class="variable-badge">{time}</span>
+                                    <span class="variable-badge">{country}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="message-preview mt-3" id="messagePreview">
+                                <strong>预览:</strong>
+                                <p class="mb-0 mt-2" id="previewText">您好张三，这是来自WhatsApp安全群发工具的测试消息。您可以在消息中使用变量如 张三 或 ABC公司。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label">发送间隔 (秒)</label>
+                                <select class="form-select" id="intervalSelect">
+                                    <option>随机 (15-45秒)</option>
+                                    <option>15秒</option>
+                                    <option>30秒</option>
+                                    <option>45秒</option>
+                                    <option>60秒</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">每日发送上限</label>
+                                <select class="form-select" id="limitSelect">
+                                    <option>100 条/日 (安全)</option>
+                                    <option>250 条/日 (中等)</option>
+                                    <option>500 条/日 (高风险)</option>
+                                    <option selected>无限制 (不推荐)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary btn-lg" id="startSending">
+                                <i class="fas fa-play-circle me-2"></i>开始安全发送
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sending-progress" id="sendingProgress">
+                    <h5 class="d-flex align-items-center">
+                        <i class="fas fa-tasks me-2"></i>发送进度
+                        <span class="badge bg-primary ms-2" id="progressCount">0/20</span>
+                    </h5>
+                    <div class="progress mb-3">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="mb-2 d-flex justify-content-between">
+                        <div>
+                            <span class="number-status status-sent"></span> 已发送: <strong id="sentCount">0</strong>
+                        </div>
+                        <div>
+                            <span class="number-status status-sending"></span> 发送中: <strong id="sendingCount">0</strong>
+                        </div>
+                        <div>
+                            <span class="number-status status-pending"></span> 待发送: <strong id="pendingCount">20</strong>
+                        </div>
+                        <div>
+                            <span class="number-status status-failed"></span> 失败: <strong id="failedCount">0</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="log-container mt-3" id="logContainer">
+                        <!-- 日志将通过JavaScript动态添加 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧状态和信息区域 -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>全球号码格式</h4>
+                        
+                        <div class="country-examples">
+                            <div class="example-item">
+                                <div class="country-name">美国</div>
+                                <div><span class="country-code-badge">+1</span> (202) 555-0198</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">英国</div>
+                                <div><span class="country-code-badge">+44</span> 7700 900123</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">德国</div>
+                                <div><span class="country-code-badge">+49</span> 152 23434345</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">印度</div>
+                                <div><span class="country-code-badge">+91</span> 98765 43210</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">中国</div>
+                                <div><span class="country-code-badge">+86</span> 138 0013 8000</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">巴西</div>
+                                <div><span class="country-code-badge">+55</span> 11 99876 5432</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">马来西亚</div>
+                                <div><span class="country-code-badge">+60</span> 12 345 6789</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">印度尼西亚</div>
+                                <div><span class="country-code-badge">+62</span> 812 3456 789</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">柬埔寨</div>
+                                <div><span class="country-code-badge">+855</span> 12 345 678</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">日本</div>
+                                <div><span class="country-code-badge">+81</span> 90 1234 5678</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">韩国</div>
+                                <div><span class="country-code-badge">+82</span> 10 1234 5678</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">新加坡</div>
+                                <div><span class="country-code-badge">+65</span> 9123 4567</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">菲律宾</div>
+                                <div><span class="country-code-badge">+63</span> 912 345 6789</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">泰国</div>
+                                <div><span class="country-code-badge">+66</span> 81 234 5678</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="country-name">越南</div>
+                                <div><span class="country-code-badge">+84</span> 912 345 678</div>
+                            </div>
+                        </div>
+                        
+                        <div class="security-tips mt-4">
+                            <h5><i class="fas fa-lightbulb me-2"></i>全球发送提示</h5>
+                            <ul class="mt-3">
+                                <li>请确保号码包含正确的国家代码</li>
+                                <li>不同国家有不同的发送限制</li>
+                                <li>注意目标国家时区，避免深夜发送</li>
+                                <li>使用变量个性化消息，提高成功率</li>
+                                <li>遵守目标国家的反垃圾邮件法规</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4"><i class="fas fa-history me-2"></i>发送状态</h4>
+                        
+                        <div class="security-meter mb-3">
+                            <div class="step-indicator">1</div>
+                            <div>
+                                <h6 class="mb-1">号码验证</h6>
+                                <p class="mb-0 text-success"><i class="fas fa-check-circle me-1"></i>20个号码已验证</p>
+                            </div>
+                        </div>
+                        
+                        <div class="security-meter mb-3">
+                            <div class="step-indicator">2</div>
+                            <div>
+                                <h6 class="mb-1">格式转换</h6>
+                                <p class="mb-0 text-success"><i class="fas fa-check-circle me-1"></i>已转换为E.164格式</p>
+                            </div>
+                        </div>
+                        
+                        <div class="security-meter mb-3">
+                            <div class="step-indicator">3</div>
+                            <div>
+                                <h6 class="mb-1">风险检测</h6>
+                                <p class="mb-0 text-success"><i class="fas fa-check-circle me-1"></i>未检测到高风险</p>
+                            </div>
+                        </div>
+                        
+                        <div class="security-meter">
+                            <div class="step-indicator">4</div>
+                            <div>
+                                <h6 class="mb-1">发送准备</h6>
+                                <p class="mb-0 text-primary"><i class="fas fa-sync-alt me-1"></i>等待开始发送</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6><i class="fas fa-chart-pie me-2"></i>国家分布</h6>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>美国</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%; background-color: #4e73df"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>印度</span>
+                                    <span>20%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px">
+                                    <div class="progress-bar" role="progressbar" style="width: 20%; background-color: #1cc88a"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>马来西亚</span>
+                                    <span>15%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px">
+                                    <div class="progress-bar" role="progressbar" style="width: 15%; background-color: #f6c23e"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>印度尼西亚</span>
+                                    <span>12%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px">
+                                    <div class="progress-bar" role="progressbar" style="width: 12%; background-color: #e74a3b"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>其他</span>
+                                    <span>28%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px">
+                                    <div class="progress-bar" role="progressbar" style="width: 28%; background-color: #858796"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-btn" id="helpBtn">
+        <i class="fas fa-question"></i>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 国家选择器逻辑
+            $('#countrySelect').change(function() {
+                const selectedOption = $(this).find('option:selected');
+                const countryCode = selectedOption.data('code');
+                $('#countryCode').text(countryCode);
+                $('#phoneInput').attr('placeholder', getPlaceholder(selectedOption.text()));
+            });
+            
+            // 获取电话号码占位符
+            function getPlaceholder(countryName) {
+                const placeholders = {
+                    '美国 (+1)': '2025550198',
+                    '英国 (+44)': '7700900123',
+                    '德国 (+49)': '15223434345',
+                    '法国 (+33)': '612345678',
+                    '中国 (+86)': '13800138000',
+                    '印度 (+91)': '9876543210',
+                    '马来西亚 (+60)': '123456789',
+                    '印度尼西亚 (+62)': '8123456789',
+                    '柬埔寨 (+855)': '12345678',
+                    '日本 (+81)': '9012345678',
+                    '韩国 (+82)': '1012345678',
+                    '新加坡 (+65)': '91234567',
+                    '菲律宾 (+63)': '9123456789',
+                    '泰国 (+66)': '812345678',
+                    '越南 (+84)': '912345678',
+                    '俄罗斯 (+7)': '9123456789',
+                    '巴西 (+55)': '11998765432',
+                    '澳大利亚 (+61)': '412345678',
+                    '新西兰 (+64)': '211234567',
+                    '阿联酋 (+971)': '501234567'
+                };
+                
+                return placeholders[countryName] || '输入电话号码';
+            }
+            
+            // 消息预览更新
+            $('#messageContent').on('input', function() {
+                let content = $(this).val();
+                content = content.replace(/{name}/g, '张三')
+                                .replace(/{phone}/g, '+8613800138000')
+                                .replace(/{company}/g, 'ABC公司')
+                                .replace(/{date}/g, new Date().toLocaleDateString())
+                                .replace(/{time}/g, new Date().toLocaleTimeString())
+                                .replace(/{country}/g, '中国');
+                $('#previewText').text(content);
+            });
+            
+            // 自动检测国家
+            $('#detectCountry').click(function() {
+                // 模拟检测过程
+                const $btn = $(this);
+                const originalHtml = $btn.html();
+                
+                $btn.html('<i class="fas fa-spinner fa-spin me-2"></i>检测中...').prop('disabled', true);
+                
+                setTimeout(() => {
+                    // 随机选择一个国家
+                    const countries = $('#countrySelect option');
+                    const randomIndex = Math.floor(Math.random() * countries.length);
+                    const randomCountry = $(countries[randomIndex]);
+                    
+                    $('#countrySelect').val(randomCountry.val()).trigger('change');
+                    $btn.html(originalHtml).prop('disabled', false);
+                    
+                    // 显示通知
+                    showNotification(`已自动检测到 ${randomCountry.text()}`, 'success');
+                }, 1500);
+            });
+            
+            // 显示通知
+            function showNotification(message, type = 'success') {
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                
+                $('.notification').html(`
+                    <div class="alert ${alertClass} alert-dismissible fade show mb-0" role="alert">
+                        <strong><i class="fas ${icon} me-2"></i>${message}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `).addClass('show');
+                
+                setTimeout(function() {
+                    $('.notification').removeClass('show');
+                }, 3000);
+            }
+            
+            // 模拟发送过程
+            $('#startSending').click(function() {
+                const $btn = $(this);
+                const originalText = $btn.html();
+                
+                $btn.html('<i class="fas fa-spinner fa-spin me-2"></i>发送中...').prop('disabled', true);
+                $('#sendingProgress').slideDown();
+                
+                // 重置进度
+                $('#progressBar').css('width', '0%');
+                $('#progressCount').text('0/20');
+                $('#sentCount').text('0');
+                $('#sendingCount').text('0');
+                $('#pendingCount').text('20');
+                $('#failedCount').text('0');
+                $('#logContainer').empty();
+                
+                // 模拟发送过程
+                let sent = 0;
+                let sending = 0;
+                let failed = 0;
+                const total = 20;
+                
+                const sendInterval = setInterval(() => {
+                    if (sending < 3 && sent + sending + failed < total) {
+                        sending++;
+                        $('#sendingCount').text(sending);
+                        
+                        // 添加日志
+                        const countries = [
+                            {name: '美国', code: '+1'}, 
+                            {name: '英国', code: '+44'}, 
+                            {name: '德国', code: '+49'}, 
+                            {name: '法国', code: '+33'}, 
+                            {name: '中国', code: '+86'}, 
+                            {name: '印度', code: '+91'},
+                            {name: '马来西亚', code: '+60'},
+                            {name: '印度尼西亚', code: '+62'},
+                            {name: '柬埔寨', code: '+855'}
+                        ];
+                        const country = countries[Math.floor(Math.random() * countries.length)];
+                        const phone = country.code + Math.floor(100000000 + Math.random() * 900000000);
+                        
+                        const logEntry = $(`
+                            <div class="log-entry d-flex justify-content-between">
+                                <div>
+                                    <span class="number-status status-sending"></span> ${phone} (${country.name})
+                                </div>
+                                <div>
+                                    <span class="status-badge sending">发送中...</span>
+                                </div>
+                            </div>
+                        `);
+                        $('#logContainer').prepend(logEntry);
+                        
+                        // 模拟发送完成
+                        setTimeout(() => {
+                            sending--;
+                            $('#sendingCount').text(sending);
+                            
+                            // 随机失败率10%
+                            const isFailed = Math.random() < 0.1;
+                            
+                            if (isFailed) {
+                                failed++;
+                                $('#failedCount').text(failed);
+                                logEntry.find('.status-badge').removeClass('sending').addClass('failed').text('发送失败');
+                                logEntry.find('.number-status').removeClass('status-sending').addClass('status-failed');
+                            } else {
+                                sent++;
+                                $('#sentCount').text(sent);
+                                logEntry.find('.status-badge').removeClass('sending').addClass('sent').text('发送成功');
+                                logEntry.find('.number-status').removeClass('status-sending').addClass('status-sent');
+                            }
+                            
+                            // 更新进度
+                            const progress = Math.round(((sent + failed) / total) * 100);
+                            $('#progressBar').css('width', progress + '%');
+                            $('#progressCount').text(`${sent + failed}/${total}`);
+                            $('#pendingCount').text(total - sent - sending - failed);
+                            
+                            // 全部完成
+                            if (sent + failed === total) {
+                                clearInterval(sendInterval);
+                                $btn.html(originalText).prop('disabled', false);
+                                showNotification('所有消息已发送完成！', 'success');
+                            }
+                        }, 2000 + Math.random() * 3000);
+                    }
+                }, 1000);
+            });
+            
+            // 帮助按钮
+            $('#helpBtn').click(function() {
+                showNotification('这是一个模拟的WhatsApp群发工具演示，所有功能均为前端模拟实现', 'info');
+            });
+        });
+    </script>
+</body>
+</html>
